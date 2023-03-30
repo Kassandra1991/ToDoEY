@@ -12,7 +12,7 @@ class ToDoListTableViewController: UITableViewController {
     
     var selectedCategory: CategoryItem? {
         didSet {
-            loadItems()
+            //loadItems()
         }
     }
 
@@ -55,27 +55,27 @@ class ToDoListTableViewController: UITableViewController {
  
     // MARK: - Add new items
     
-    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-        var textField = UITextField()
-        let alert = UIAlertController(title: "Add new ToDo item:", message: "", preferredStyle: .alert)
-        let ok = UIAlertAction(title: "Add", style: .default) { ok in
-            guard let new = textField.text else {
-                return
-            }
-            let newItem = Item(context: self.context)
-            newItem.title = new
-            newItem.isDone = false
-            newItem.parentCategory = self.selectedCategory
-            self.items.append(newItem)
-            self.saveItems()
-        }
-        alert.addTextField { tf in
-            tf.placeholder = "new item"
-            textField = tf
-        }
-        alert.addAction(ok)
-        present(alert, animated: true)
-    }
+//    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+//        var textField = UITextField()
+//        let alert = UIAlertController(title: "Add new ToDo item:", message: "", preferredStyle: .alert)
+//        let ok = UIAlertAction(title: "Add", style: .default) { ok in
+//            guard let new = textField.text else {
+//                return
+//            }
+//            let newItem = Item(context: self.context)
+//            newItem.title = new
+//            newItem.isDone = false
+//            newItem.parentCategory = self.selectedCategory
+//            self.items.append(newItem)
+//            self.saveItems()
+//        }
+//        alert.addTextField { tf in
+//            tf.placeholder = "new item"
+//            textField = tf
+//        }
+//        alert.addAction(ok)
+//        present(alert, animated: true)
+//    }
     
     private func saveItems() {
         do {
@@ -86,44 +86,44 @@ class ToDoListTableViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    private func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-        guard let name = selectedCategory?.name else {
-            return
-        }
-        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", name)
-        if let additionalPredicat = predicate {
-            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [additionalPredicat, categoryPredicate])
-        } else {
-            request.predicate = categoryPredicate
-        }
-        do {
-            items = try context.fetch(request)
-        } catch  {
-            print("Error fetch request: \(error.localizedDescription)")
-        }
-        tableView.reloadData()
-    }
+//    private func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+//        guard let name = selectedCategory?.name else {
+//            return
+//        }
+//        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", name)
+//        if let additionalPredicat = predicate {
+//            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [additionalPredicat, categoryPredicate])
+//        } else {
+//            request.predicate = categoryPredicate
+//        }
+//        do {
+//            items = try context.fetch(request)
+//        } catch  {
+//            print("Error fetch request: \(error.localizedDescription)")
+//        }
+//        tableView.reloadData()
+//    }
 }
 
 // MARK: - UISearchBarDelegate
 
-extension ToDoListTableViewController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let text = searchBar.text else {
-            return
-        }
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
-        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
-        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        loadItems(with: request, predicate: predicate)
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchBar.text?.count == 0 {
-            loadItems()
-            DispatchQueue.main.async {
-                searchBar.resignFirstResponder()
-            }
-        }
-    }
-}
+//extension ToDoListTableViewController: UISearchBarDelegate {
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        guard let text = searchBar.text else {
+//            return
+//        }
+//        let request: NSFetchRequest<Item> = Item.fetchRequest()
+//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
+//        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+//        loadItems(with: request, predicate: predicate)
+//    }
+//
+//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+//        if searchBar.text?.count == 0 {
+//            loadItems()
+//            DispatchQueue.main.async {
+//                searchBar.resignFirstResponder()
+//            }
+//        }
+//    }
+//}

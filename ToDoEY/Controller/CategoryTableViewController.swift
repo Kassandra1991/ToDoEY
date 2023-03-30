@@ -6,10 +6,12 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryTableViewController: UITableViewController {
 
+    let realm = try! Realm()
+    
     var categories = [CategoryItem]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
    
@@ -19,7 +21,7 @@ class CategoryTableViewController: UITableViewController {
         super.viewDidLoad()
         
         navigationController?.navigationBar.backgroundColor =  #colorLiteral(red: 0.2103916407, green: 0.5888115764, blue: 1, alpha: 1)
-        loadCategories()
+        //loadCategories()
     }
     
     // MARK: - Alert controller
@@ -31,10 +33,10 @@ class CategoryTableViewController: UITableViewController {
             guard let new = textField.text else {
                 return
             }
-            let newItem = CategoryItem(context: self.context)
+            let newItem = CategoryItem()
             newItem.name = new
             self.categories.append(newItem)
-            self.saveCategories()
+            self.saveCategories(category: newItem)
         }
         alert.addTextField { tf in
             tf.placeholder = "new category"
@@ -77,21 +79,23 @@ class CategoryTableViewController: UITableViewController {
     
     // MARK: - Manipulation functions
     
-    private func saveCategories() {
+    private func saveCategories(category: CategoryItem) {
         do {
-            try context.save()
+            try realm.write({
+                realm.add(category)
+            })
         } catch {
             print("Error saving context: \(error.localizedDescription)")
         }
         self.tableView.reloadData()
     }
     
-    private func loadCategories(with request: NSFetchRequest<CategoryItem> = CategoryItem.fetchRequest()) {
-        do {
-            categories = try context.fetch(request)
-        } catch  {
-            print("Error fetch request: \(error.localizedDescription)")
-        }
-        tableView.reloadData()
-    }
+//    private func loadCategories(with request: NSFetchRequest<CategoryItem> = CategoryItem.fetchRequest()) {
+//        do {
+//            categories = try context.fetch(request)
+//        } catch  {
+//            print("Error fetch request: \(error.localizedDescription)")
+//        }
+//        tableView.reloadData()
+//    }
 }
