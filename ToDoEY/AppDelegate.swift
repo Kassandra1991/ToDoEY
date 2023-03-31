@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             print("Error init Realm: \(error.localizedDescription)")
         }
+        print(Realm.Configuration.defaultConfiguration.fileURL)
         
         return true
     }
