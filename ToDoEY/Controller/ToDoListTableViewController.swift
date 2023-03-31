@@ -52,7 +52,9 @@ class ToDoListTableViewController: UITableViewController {
         }
         do {
             try! realm.write({
-                item.isDone = !item.isDone
+                
+                realm.delete(item)
+                //item.isDone = !item.isDone
             })
         }
         tableView.reloadData()
