@@ -12,16 +12,14 @@ class CategoryTableViewController: UITableViewController {
 
     let realm = try! Realm()
     
-    var categories = [CategoryItem]()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var categories: Results<CategoryItem>?
    
     // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         navigationController?.navigationBar.backgroundColor =  #colorLiteral(red: 0.2103916407, green: 0.5888115764, blue: 1, alpha: 1)
-        //loadCategories()
+        loadCategories()
     }
     
     // MARK: - Alert controller
@@ -35,7 +33,6 @@ class CategoryTableViewController: UITableViewController {
             }
             let newItem = CategoryItem()
             newItem.name = new
-            self.categories.append(newItem)
             self.saveCategories(category: newItem)
         }
         alert.addTextField { tf in
@@ -53,13 +50,13 @@ class CategoryTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return categories?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
-        let category = categories[indexPath.row]
-        cell.textLabel?.text = category.name
+        let category = categories?[indexPath.row]
+        cell.textLabel?.text = category?.name
         return cell
     }
     
@@ -73,7 +70,7 @@ class CategoryTableViewController: UITableViewController {
         
         let destinationVC = segue.destination as! ToDoListTableViewController
         if let indexPath = tableView.indexPathForSelectedRow {
-            destinationVC.selectedCategory = categories[indexPath.row]
+            destinationVC.selectedCategory = categories?[indexPath.row]
         }
     }
     
@@ -90,12 +87,8 @@ class CategoryTableViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-//    private func loadCategories(with request: NSFetchRequest<CategoryItem> = CategoryItem.fetchRequest()) {
-//        do {
-//            categories = try context.fetch(request)
-//        } catch  {
-//            print("Error fetch request: \(error.localizedDescription)")
-//        }
-//        tableView.reloadData()
-//    }
+    private func loadCategories() {
+        categories = realm.objects(CategoryItem.self)
+        tableView.reloadData()
+    }
 }
