@@ -82,7 +82,7 @@ class CategoryTableViewController: UITableViewController {
                 realm.add(category)
             })
         } catch {
-            print("Error saving context: \(error.localizedDescription)")
+            print("Error saving data: \(error.localizedDescription)")
         }
         self.tableView.reloadData()
     }
