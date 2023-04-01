@@ -8,7 +8,7 @@
 import UIKit
 import RealmSwift
 
-class ToDoListTableViewController: UITableViewController {
+class ToDoListTableViewController: SwipeTableViewController {
     
     var selectedCategory: CategoryItem? {
         didSet {
@@ -36,7 +36,8 @@ class ToDoListTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "toDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "toDoItemCell", for: indexPath)
         if let item = items?[indexPath.row] {
             cell.textLabel?.text = item.title
             cell.accessoryType = item.isDone ? .checkmark : .none
@@ -95,6 +96,19 @@ class ToDoListTableViewController: UITableViewController {
     private func loadItems() {
         items = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
+    }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        guard let item = items?[indexPath.row] else {
+            return
+        }
+        do {
+            try self.realm.write {
+                self.realm.delete(item)
+            }
+        } catch  {
+            print("Error delete category: \(error.localizedDescription)")
+        }
     }
 }
 

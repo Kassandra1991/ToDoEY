@@ -63,10 +63,6 @@ class CategoryTableViewController: SwipeTableViewController {
     
     // MARK: - TableViewDelegate
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        66
-    }
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.performSegue(withIdentifier: "goToItems", sender: self)
     }
