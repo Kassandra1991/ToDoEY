@@ -10,17 +10,25 @@ import RealmSwift
 import ChameleonFramework
 
 class CategoryTableViewController: SwipeTableViewController {
-
+    
     let realm = try! Realm()
     
     var categories: Results<CategoryItem>?
-   
+    
     // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.backgroundColor =  #colorLiteral(red: 0.2103916407, green: 0.5888115764, blue: 1, alpha: 1)
         loadCategories()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        guard let navBar = navigationController?.navigationBar else {
+            print("FatalError: navigation controller does not exist!")
+            return
+        }
+        navBar.backgroundColor = UIColor(hexString: "1D9BF6")
     }
     
     // MARK: - Alert controller
@@ -44,9 +52,9 @@ class CategoryTableViewController: SwipeTableViewController {
         alert.addAction(ok)
         present(alert, animated: true)
     }
-
+    
     // MARK: - Table view data source
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -59,7 +67,9 @@ class CategoryTableViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         guard let category = categories?[indexPath.row] else {return UITableViewCell()}
         cell.textLabel?.text = category.name
-        cell.backgroundColor = UIColor(hexString: category.color)
+        guard let color = UIColor(hexString: category.color) else {return UITableViewCell()}
+        cell.backgroundColor = color
+        cell.textLabel?.textColor = ContrastColorOf(backgroundColor: color, returnFlat: true)
         return cell
     }
     
