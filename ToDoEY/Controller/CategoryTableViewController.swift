@@ -7,8 +7,9 @@
 
 import UIKit
 import RealmSwift
+//import SwipeCellKit
 
-class CategoryTableViewController: UITableViewController {
+class CategoryTableViewController: SwipeTableViewController {
 
     let realm = try! Realm()
     
@@ -54,13 +55,17 @@ class CategoryTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let category = categories?[indexPath.row]
         cell.textLabel?.text = category?.name
         return cell
     }
     
     // MARK: - TableViewDelegate
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        66
+    }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.performSegue(withIdentifier: "goToItems", sender: self)
@@ -90,5 +95,17 @@ class CategoryTableViewController: UITableViewController {
     private func loadCategories() {
         categories = realm.objects(CategoryItem.self)
         tableView.reloadData()
+    }
+    override func updateModel(at indexPath: IndexPath) {
+        guard let category = categories?[indexPath.row] else {
+            return
+        }
+        do {
+            try self.realm.write {
+                self.realm.delete(category)
+            }
+        } catch  {
+            print("Error delete category: \(error.localizedDescription)")
+        }
     }
 }
