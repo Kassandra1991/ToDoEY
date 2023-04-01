@@ -34,6 +34,7 @@ class CategoryTableViewController: SwipeTableViewController {
             }
             let newItem = CategoryItem()
             newItem.name = new
+            newItem.color = UIColor.randomFlat().hexValue()
             self.saveCategories(category: newItem)
         }
         alert.addTextField { tf in
@@ -56,9 +57,9 @@ class CategoryTableViewController: SwipeTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        let category = categories?[indexPath.row]
-        cell.textLabel?.text = category?.name
-        cell.backgroundColor = UIColor.randomFlat()
+        guard let category = categories?[indexPath.row] else {return UITableViewCell()}
+        cell.textLabel?.text = category.name
+        cell.backgroundColor = UIColor(hexString: category.color)
         return cell
     }
     
