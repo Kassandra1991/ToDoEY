@@ -7,7 +7,7 @@
 
 import UIKit
 import RealmSwift
-//import SwipeCellKit
+import ChameleonFramework
 
 class CategoryTableViewController: SwipeTableViewController {
 
@@ -58,6 +58,7 @@ class CategoryTableViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let category = categories?[indexPath.row]
         cell.textLabel?.text = category?.name
+        cell.backgroundColor = UIColor.randomFlat()
         return cell
     }
     
